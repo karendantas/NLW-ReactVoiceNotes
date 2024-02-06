@@ -1,0 +1,14 @@
+export function NewCard(){
+
+    return (
+
+        <button className="flex flex-col gap-3 rounded-md text-left bg-slate-700 p-5">
+            <span className ="text-sm font-medium text-slate-200">
+              Adicionar nota
+            </span>
+            <p className="text-sm leading-6 text-slate-400">
+              Grave uma nota em áudio que será convertida para texto automaticamente.
+            </p>
+        </button>
+    )
+}
