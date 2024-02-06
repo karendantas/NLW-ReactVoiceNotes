@@ -40,9 +40,8 @@ export function NoteCards({note}: NoteCardProps){
         */}
         <Dialog.Portal>
 
-           
             <Dialog.Overlay  className = "inset-0 fixed bg-black/60" />
-            <Dialog.Content className="flex flex-col max-w-[640px] w-full h-[60vh] fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-slate-700 rounded-md outline-none" >
+            <Dialog.Content className="flex flex-col max-w-[640px] w-full h-[70vh] fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-slate-700 rounded-md outline-none" >
                 
             <Dialog.Close className="absolute right-0 top-0 text-slate-400 p-1.5 hover:text-slate-100">
                 <X className="size-5 "/>
