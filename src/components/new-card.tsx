@@ -39,6 +39,10 @@ export function NewCard({onCreatedNote}: NewCardProps){
         {/*Dá função recebida na props, enviamos o conteudo do novo card para ser salvo no array de notas */}
         onCreatedNote(content)
 
+        {/*após a nota ser enviada, o conteudo da textarea é apagado, a mesangem de onboarding aparece novamente */}
+        setContent('')
+        setshouldShownOnBoarding(true)
+
         toast.success('Nota salva com sucesso')
     }
 
@@ -78,6 +82,7 @@ export function NewCard({onCreatedNote}: NewCardProps){
                      placeholder="Digite aqui"
                      className = "text-sm leading-6 text-slate-400 outline-none bg-transparent resize-none flex-1 "
                      onChange = {handleChangeText}
+                     value={content}
                      ></textarea>
                 )}
                 </div>

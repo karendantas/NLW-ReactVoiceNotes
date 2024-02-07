@@ -4,24 +4,38 @@ import { NoteCards } from "./components/note-card"
 import { useState } from "react"
 
 
+interface Note {
+  id: string,
+  date: Date,
+  content: string
+}
+
 function App() {
+
+
   {/*Criando uma lista com os objetos de uma nota */}
-  const [notes, setNotes] =  useState(
-    [ {  id:1, date: new Date(), content: 'Hello Moto'},
-      {  id:2, date: new Date(), content: 'Helloiii Moto'}
-    
-    
-    ]
-  )
+  const [notes, setNotes] =  useState<Note[]>( () => {
+    const notesOnLocalStorage = localStorage.getItem('notes')
+
+      if (notesOnLocalStorage){
+        return JSON.parse('notes')
+      }
+
+      return []
+  } )
   
   {/*essa função pega o conteudo de uma nova nota do componente 'NewCard' e cria um novo objeto na lista */}
   function onCreatedNote(content: string){
       const newNote = { 
-          id: 3, 
+          id: crypto.randomUUID(), 
           date: new Date(), 
           content
         }
-      setNotes([newNote, ...notes])
+
+      const notesArray  = [newNote, ...notes]
+      setNotes(notesArray)
+
+      localStorage.setItem('notes', JSON.stringify(notesArray))
   }
 
   return (
