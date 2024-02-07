@@ -1,9 +1,28 @@
 import Logo from "./assets/Logo.png"
 import { NewCard } from "./components/new-card"
 import { NoteCards } from "./components/note-card"
+import { useState } from "react"
 
 
 function App() {
+  {/*Criando uma lista com os objetos de uma nota */}
+  const [notes, setNotes] =  useState(
+    [ {  id:1, date: new Date(), content: 'Hello Moto'},
+      {  id:2, date: new Date(), content: 'Helloiii Moto'}
+    
+    
+    ]
+  )
+  
+  {/*essa função pega o conteudo de uma nova nota do componente 'NewCard' e cria um novo objeto na lista */}
+  function onCreatedNote(content: string){
+      const newNote = { 
+          id: 3, 
+          date: new Date(), 
+          content
+        }
+      setNotes([newNote, ...notes])
+  }
 
   return (
     <>
@@ -23,12 +42,15 @@ function App() {
 
         {/* Note Cards */}
         <div className="grid grid-cols-3 gap-6 auto-rows-[250px]">
-          <NewCard/>
-          {/* dentro da props, já esta inserido diretamente o objeto ao obrir o segundo par de chaves*/}
-          <NoteCards note = {{ 
-            date: new Date(),
-            content: 'Hello Moto'
-            }}  />
+          <NewCard onCreatedNote = {onCreatedNote}/>
+
+
+        {/*lendo o array dentro do useState e retornando o objeto dentro de cada posicao na prop */}
+        {notes.map( note => {
+          return<NoteCards key = {note.id} note = {note}/>
+        
+        }) }
+        
     
         </div>
 

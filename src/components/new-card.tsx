@@ -1,14 +1,45 @@
 import * as Dialog from "@radix-ui/react-dialog"
 import {X} from "lucide-react"
-import { useState } from "react"
+import { ChangeEvent, FormEvent, useState } from "react"
+import { toast } from "sonner"
 
-export function NewCard(){
+
+
+interface NewCardProps{
+    onCreatedNote: (content:string) => void
+}
+export function NewCard({onCreatedNote}: NewCardProps){
     
     const [shouldShownOnBoarding, setshouldShownOnBoarding ] = useState(true)
+    const [content, setContent] = useState('')
     
     function handleStartEditor(){
         setshouldShownOnBoarding(false)
     
+    }
+
+
+    {/* Essa função esta lendo o que o usuario esta digitando na textarea */}
+    function handleChangeText(event: ChangeEvent<HTMLTextAreaElement>){
+
+        setContent(event.target.value)
+
+        if (event.target.value === ''){
+            setshouldShownOnBoarding(true)
+        }
+
+    }
+
+    function handleSaveNote(event: FormEvent){
+        {/*essa funcao faz com que o forms não aja da sua forma padrao, e nao tenta redirecionar 
+           o usuario para outra tela ao der submit
+        */}
+        event.preventDefault()
+
+        {/*Dá função recebida na props, enviamos o conteudo do novo card para ser salvo no array de notas */}
+        onCreatedNote(content)
+
+        toast.success('Nota salva com sucesso')
     }
 
     return (
@@ -31,7 +62,8 @@ export function NewCard(){
                 <Dialog.Close className="absolute right-0 top-0 text-slate-400 p-1.5 hover:text-slate-100">
                     <X className="size-5 "/>
                 </Dialog.Close>
-               
+
+            <form onSubmit={handleSaveNote} className="flex flex-1 flex-col">
                 <div className = "flex flex-1 flex-col gap-3 p-5">
                     <span className ="text-sm font-medium text-slate-300">
                         Adicionar Nota
@@ -45,16 +77,17 @@ export function NewCard(){
                     <textarea
                      placeholder="Digite aqui"
                      className = "text-sm leading-6 text-slate-400 outline-none bg-transparent resize-none flex-1 "
+                     onChange = {handleChangeText}
                      ></textarea>
                 )}
                 </div>
                 <button 
-                    type= "button"
+                    type= "submit"
                     className=" w-full text-sm text-center py-3 bg-lime-400 text-lime-950 font-medium outline-none hover:bg-lime-500"
                 >  
                 Salvar nota
                 </button>
-
+            </form> 
             </Dialog.Content>
         </Dialog.Portal>
 
