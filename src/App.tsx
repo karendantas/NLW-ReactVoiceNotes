@@ -12,7 +12,6 @@ interface Note {
 
 function App() {
 
-  localStorage.clear()
 
 //--- criação, salvamento de notas e filtragem de notas
 

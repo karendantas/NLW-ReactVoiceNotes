@@ -13,6 +13,9 @@ export function NewCard({onCreatedNote}: NewCardProps){
     const [shouldShownOnBoarding, setshouldShownOnBoarding ] = useState(true)
     const [content, setContent] = useState('')
     
+    
+    let SpeechRecognition: SpeechRecognition | null =  null
+
     function handleStartEditor(){
         setshouldShownOnBoarding(false)
     
@@ -31,20 +34,76 @@ export function NewCard({onCreatedNote}: NewCardProps){
     }
 
     function handleSaveNote(event: FormEvent){
-        {/*essa funcao faz com que o forms não aja da sua forma padrao, e nao tenta redirecionar 
-           o usuario para outra tela ao der submit
-        */}
+        //funcao faz com que o forms não aja da sua forma padrao, e nao tenta redirecionar o usuario para outra tela ao der submit
         event.preventDefault()
 
-        {/*Dá função recebida na props, enviamos o conteudo do novo card para ser salvo no array de notas */}
+
+        //funcao impede que a nota seja salva sem conteúdo
+        if (content === ''){
+            return
+        }
+
+        //Dá função recebida na props, enviamos o conteudo do novo card para ser salvo no array de notas no app
         onCreatedNote(content)
 
-        {/*após a nota ser enviada, o conteudo da textarea é apagado, a mesangem de onboarding aparece novamente */}
+        //após a nota ser enviada, o conteudo da textarea é apagado, a mesangem de onboarding aparece novamente 
         setContent('')
         setshouldShownOnBoarding(true)
 
         toast.success('Nota salva com sucesso')
     }
+
+
+// --- Conteudo gravado 
+
+    const [isRecording, setIsRecording] = useState(false)
+
+    function  handleStartRecording(){
+        setIsRecording(true)
+        setshouldShownOnBoarding(false)
+
+        const isSpeechRecognitionAPIAvailable = 'SpeechRecognition' in window 
+        || 'webkitSpeechRecognition' in window
+
+        if (!isSpeechRecognitionAPIAvailable){
+            alert('Infelizmente o seu navegador não suporta a API de gravação.')
+            return
+        }
+
+        //configurando API
+       
+        const SpeechRecognitionAPI = window.SpeechRecognition || window.webkitSpeechRecognition
+
+        SpeechRecognition = new SpeechRecognitionAPI()
+        SpeechRecognition.lang = 'pt-BR'
+        SpeechRecognition.continuous = true
+        SpeechRecognition.maxAlternatives = 1
+        SpeechRecognition.interimResults = true
+
+        SpeechRecognition.onresult = (event) => {
+            const transcription = Array.from(event.results).reduce( (text, result) => {
+                return text.concat(result[0].transcript)
+        } , '')
+
+        setContent(transcription)
+       }
+
+       SpeechRecognition.onerror = (event) =>{
+        console.log(event.error)
+       }
+
+        SpeechRecognition.start()
+
+    }
+
+    function handleStopRecording(){
+        setIsRecording(false)
+
+       if (SpeechRecognition != null){ 
+        SpeechRecognition.stop
+       }
+    }
+
 
     return (
 
@@ -67,7 +126,7 @@ export function NewCard({onCreatedNote}: NewCardProps){
                     <X className="size-5 "/>
                 </Dialog.Close>
 
-            <form onSubmit={handleSaveNote} className="flex flex-1 flex-col">
+            <form  className="flex flex-1 flex-col">
                 <div className = "flex flex-1 flex-col gap-3 p-5">
                     <span className ="text-sm font-medium text-slate-300">
                         Adicionar Nota
@@ -75,23 +134,35 @@ export function NewCard({onCreatedNote}: NewCardProps){
                 
                 {shouldShownOnBoarding ?
                     (<p className="text-sm leading-6 text-slate-400">
-                        Começar <button className = "font-medium text-lime-400 hover:underline">gravando uma nota </button> em audio ou se preferir <button  className = "font-medium text-lime-400 hover:underline" onClick = {handleStartEditor} >utilize apenas texto </button>.
+                        Começar <button type="button" onClick={handleStartRecording} className = "font-medium text-lime-400 hover:underline">gravando uma nota </button> em audio ou se preferir <button type="button"  className = "font-medium text-lime-400 hover:underline" onClick = {handleStartEditor} >utilize apenas texto </button>.
                     </p>
                 ):(
                     <textarea
-                     placeholder="Digite aqui"
                      className = "text-sm leading-6 text-slate-400 outline-none bg-transparent resize-none flex-1 "
                      onChange = {handleChangeText}
                      value={content}
                      ></textarea>
                 )}
                 </div>
+
+                { isRecording ? ( 
+                    <button 
+                        type = "button"
+                        className=" w-full text-sm text-center py-3 bg-lime-400 text-lime-950 font-medium outline-none hover:bg-lime-500"
+                    >  
+                        Gravando! <button type="button" onClick={handleStopRecording}> (Clique para parar) </button>
+                  </button>
+
+                ) : (
                 <button 
-                    type= "submit"
+                    type= "button"
+                    onClick={handleSaveNote}
                     className=" w-full text-sm text-center py-3 bg-lime-400 text-lime-950 font-medium outline-none hover:bg-lime-500"
                 >  
-                Salvar nota
+                    Salvar nota
                 </button>
+                )}
+                
             </form> 
             </Dialog.Content>
         </Dialog.Portal>
