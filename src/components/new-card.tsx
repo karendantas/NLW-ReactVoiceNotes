@@ -67,7 +67,10 @@ export function NewCard({onCreatedNote}: NewCardProps){
 
         if (!isSpeechRecognitionAPIAvailable){
             alert('Infelizmente o seu navegador não suporta a API de gravação.')
+            setshouldShownOnBoarding(true)
+            setIsRecording(false)
             return
+
         }
 
         //configurando API
