@@ -37,13 +37,15 @@ export function NoteCards({note, onDeletedNotes}: NoteCardProps){
 
         </Dialog.Trigger>
         
+
+      
         {/* O portal cria uma janela que cobre a tela inteira
             O overlay é uma div que podemos estilizar para dar os efeitos de modal
         */}
         <Dialog.Portal>
 
             <Dialog.Overlay  className = "inset-0 fixed bg-black/60" />
-            <Dialog.Content className="flex flex-col max-w-[640px] w-full h-[70vh] fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-slate-700 rounded-md outline-none" >
+            <Dialog.Content className="flex flex-col inset-0 md:max-w-[640px] w-full  md:h-[70vh] fixed md:left-1/2 md:top-1/2 md:-translate-x-1/2 md:-translate-y-1/2 bg-slate-700 md:rounded-md outline-none" >
                 
             <Dialog.Close className="absolute right-0 top-0 text-slate-400 p-1.5 hover:text-slate-100">
                 <X className="size-5 "/>
