@@ -1,7 +1,7 @@
 import Logo from "./assets/Logo.png"
 import { NewCard } from "./components/new-card"
 import { NoteCards } from "./components/note-card"
-import { useState } from "react"
+import { ChangeEvent, useState } from "react"
 
 
 interface Note {
@@ -12,8 +12,14 @@ interface Note {
 
 function App() {
 
+  localStorage.clear()
 
-  {/*Criando uma lista com os objetos de uma nota */}
+//--- criação, salvamento de notas e filtragem de notas
+
+
+  
+ 
+  //Criando uma lista com os objetos de uma nota 
   const [notes, setNotes] =  useState<Note[]>( () => {
     const notesOnLocalStorage = localStorage.getItem('notes')
 
@@ -24,7 +30,7 @@ function App() {
       return []
   } )
   
-  {/*essa função pega o conteudo de uma nova nota do componente 'NewCard' e cria um novo objeto na lista */}
+  //essa função pega o conteudo de uma nova nota do componente 'NewCard' e cria um novo objeto na lista 
   function onCreatedNote(content: string){
       const newNote = { 
           id: crypto.randomUUID(), 
@@ -38,6 +44,27 @@ function App() {
       localStorage.setItem('notes', JSON.stringify(notesArray))
   }
 
+  const [search, setSearch] = useState('')
+
+  function handleSearch(event: ChangeEvent<HTMLInputElement>){
+      const query = event.target.value
+      setSearch(query)
+
+     
+  }
+
+  //Criando um novo array de notas que retorna as notas procuradas ou nao
+  const filteredNotes = search != '' 
+      ?
+      notes.filter( note => note.content.toLocaleLowerCase().includes(search.toLocaleLowerCase()))
+      :
+      notes
+
+  //--- criação, salvamento e filtragem de notas 
+
+
+
+  
   return (
     <>
       <div className="mx-auto max-w-6xl my-12 space-y-6">
@@ -48,6 +75,7 @@ function App() {
               type="text" 
               placeholder="Procure em suas notas..." 
               className= "w-full bg-transparent text-3xl font-semibold tracking-tighter outline-none placeholder:text-slate-500"
+              onChange = {handleSearch}
             />
           </form>
 
@@ -59,8 +87,8 @@ function App() {
           <NewCard onCreatedNote = {onCreatedNote}/>
 
 
-        {/*lendo o array dentro do useState e retornando o objeto dentro de cada posicao na prop */}
-        {notes.map( note => {
+        {/*lendo o array das notas filtradas(podem estar filtradas ou nao) dentro do useState e retornando o objeto dentro de cada posicao na prop */}
+        {filteredNotes.map( note => {
           return<NoteCards key = {note.id} note = {note}/>
         
         }) }
