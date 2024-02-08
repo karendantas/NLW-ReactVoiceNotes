@@ -16,8 +16,6 @@ function App() {
 //--- criação, salvamento de notas e filtragem de notas
 
 
-  
- 
   //Criando uma lista com os objetos de uma nota 
   const [notes, setNotes] =  useState<Note[]>( () => {
     const notesOnLocalStorage = localStorage.getItem('notes')
@@ -43,6 +41,18 @@ function App() {
       localStorage.setItem('notes', JSON.stringify(notesArray))
   }
 
+  function onDeletedNote(id: string){
+
+    const notesArray = notes.filter((note) => {
+      return note.id != id
+    })
+    setNotes(notesArray)
+
+    localStorage.setItem('notes', JSON.stringify(notesArray))
+
+
+  }
+
   const [search, setSearch] = useState('')
 
   function handleSearch(event: ChangeEvent<HTMLInputElement>){
@@ -60,6 +70,8 @@ function App() {
       notes
 
   //--- criação, salvamento e filtragem de notas 
+
+
 
 
 
@@ -88,7 +100,7 @@ function App() {
 
         {/*lendo o array das notas filtradas(podem estar filtradas ou nao) dentro do useState e retornando o objeto dentro de cada posicao na prop */}
         {filteredNotes.map( note => {
-          return<NoteCards key = {note.id} note = {note}/>
+          return<NoteCards key = {note.id} note = {note} onDeletedNotes={onDeletedNote}/>
         
         }) }
         

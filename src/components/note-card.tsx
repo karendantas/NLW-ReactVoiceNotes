@@ -7,15 +7,17 @@ interface NoteCardProps{
 
     /*Criando um objeto para note */
     note:{
+        id: string,
         date:Date
         content: string
-    }
+    },
+    onDeletedNotes: (id:string) => void
 }
 
 
 
 
-export function NoteCards({note}: NoteCardProps){
+export function NoteCards({note, onDeletedNotes}: NoteCardProps){
 
     return (
 
@@ -58,9 +60,11 @@ export function NoteCards({note}: NoteCardProps){
 
                 <button 
                     type= "button"
+                    onClick = {() => onDeletedNotes(note.id)}
                     className=" w-full text-sm text-center py-3 bg-slate-800 text-slate-300 font-medium outline-none group"
                 >  
                 Deseja <span className="text-red-400 group-hover:underline">apagar essa nota?</span> 
+
                 </button>
             </Dialog.Content>
         </Dialog.Portal>
